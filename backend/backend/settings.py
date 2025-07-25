@@ -37,10 +37,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     # My APP:
-    'core'
+    'core',
+    'rest_framework',
 ]
+
+# Django REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.TokenAuthentication', # برای استفاده از توکن
+        'rest_framework.authentication.SessionAuthentication', # برای استفاده از session (مناسب توسعه و تست)
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
+}cd..
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
