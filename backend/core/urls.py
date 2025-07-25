@@ -1,7 +1,7 @@
 # backend/core/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserViewSet
+from .views import UserViewSet, signup
 
 # ایجاد یک نمونه از DefaultRouter
 router = DefaultRouter()
@@ -16,4 +16,6 @@ router.register(r'users', UserViewSet, basename='user')
 # include(router.urls) تمام URLهای ایجاد شده توسط روتر را اضافه می‌کند.
 urlpatterns = [
     path('', include(router.urls)),
+    # Endpoint مخصوص SignUp
+    path('signup/', signup, name='user-signup'),
 ]
