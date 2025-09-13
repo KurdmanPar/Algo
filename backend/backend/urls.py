@@ -19,12 +19,19 @@ Including another URLconf
 # backend/backend/urls.py
 from django.contrib import admin
 from django.urls import path, include  # include() را برای شامل کردن URLهای App 'core' زیر پیشوند 'api/' استفاده می‌کنیم.
+from rest_framework_simplejwt.views import (
+            TokenObtainPairView,
+            TokenRefreshView,
+        )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # شامل کردن URLهای App 'core' زیر پیشوند 'api/'
     # هر URL که با '/api/' شروع شود، به App 'core' فرستاده می‌شود.
     path('api/', include('core.urls')),
+    # اضافه کردن URLهای JWT
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 
