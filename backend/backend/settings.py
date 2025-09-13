@@ -40,17 +40,19 @@ INSTALLED_APPS = [
     # My APP:
     'core',
     'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 # Django REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.TokenAuthentication', # برای استفاده از توکن
         'rest_framework.authentication.SessionAuthentication', # برای استفاده از session (مناسب توسعه و تست)
     ],
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated', # ممکن است بخواهید این را بعداً تنظیم کنید
+        ],
 }
 
 

@@ -18,7 +18,7 @@ Including another URLconf
 
 # backend/backend/urls.py
 from django.contrib import admin
-from django.urls import path, include # <-- include را اضافه کنید اگر نیست
+from django.urls import path, include  # include() را برای شامل کردن URLهای App 'core' زیر پیشوند 'api/' استفاده می‌کنیم.
 
 urlpatterns = [
     path('admin/', admin.site.urls),
