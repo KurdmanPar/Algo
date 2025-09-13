@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'core',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 # Django REST Framework settings
@@ -49,7 +50,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication', # برای استفاده از session (مناسب توسعه و تست)
-    # ],
+    ],
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticated', # ممکن است بخواهید این را بعداً تنظیم کنید
     #     ],
@@ -58,9 +59,10 @@ REST_FRAMEWORK = {
 # تنظیمات JWT
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # توکن دسترسی 30 دقیقه معتبر است
+    # "ACCESS_TOKEN_LIFETIME": timedelta(seconds=50),  # توکن دسترسی 50 ثانیه معتبر است
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # توکن تازه‌سازی 1 روز معتبر است
-    "ROTATE_REFRESH_TOKENS": False,  # فعلاً False. در آینده ممکن است True کنیم.
-    "BLACKLIST_AFTER_ROTATION": False,  # فعلاً False. در آینده ممکن است True کنیم.
+    "ROTATE_REFRESH_TOKENS": True,  # فعلاً False. در آینده ممکن است True کنیم.
+    "BLACKLIST_AFTER_ROTATION": True,  # فعلاً False. در آینده ممکن است True کنیم.
     "UPDATE_LAST_LOGIN": False,
 
     "ALGORITHM": "HS256",
