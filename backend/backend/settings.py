@@ -1,3 +1,4 @@
+# E:\0-Projects\Algo\backend\backend\settings.py
 """
 Django settings for backend project.
 
@@ -12,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,8 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+# بارگذاری متغیرهای محیطی از فایل .env
+load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^h04d-he7^6_6-(jdfe*(9mh(stjprmh12h-t$x23p!t57t@yo'
+# خواندن SECRET_KEY از متغیرهای محیطی. در صورت عدم وجود، برنامه با خطا متوقف می‌شود.
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,6 +50,7 @@ INSTALLED_APPS = [
     'core',
     'rest_framework',
     'rest_framework_simplejwt',
+    # اپلیکیشن لازم برای مدیریت لیست سیاه توکن‌های Refresh
     'rest_framework_simplejwt.token_blacklist',
 ]
 
@@ -61,8 +70,12 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # توکن دسترسی 30 دقیقه معتبر است
     # "ACCESS_TOKEN_LIFETIME": timedelta(seconds=50),  # توکن دسترسی 50 ثانیه معتبر است
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # توکن تازه‌سازی 1 روز معتبر است
-    "ROTATE_REFRESH_TOKENS": True,  # فعلاً False. در آینده ممکن است True کنیم.
-    "BLACKLIST_AFTER_ROTATION": True,  # فعلاً False. در آینده ممکن است True کنیم.
+    # --- تغییرات کلیدی برای پیاده‌سازی Logout ---
+    # هر بار که از یک توکن Refresh استفاده می‌شود، یک توکن جدید ایجاد شده و توکن قدیمی منقضی می‌شود.
+    "ROTATE_REFRESH_TOKENS": True,
+    # پس از چرخش، توکن Refresh قدیمی به لیست سیاه اضافه می‌شود.
+    "BLACKLIST_AFTER_ROTATION": True,
+    # --- پایان تغییرات کلیدی ---
     "UPDATE_LAST_LOGIN": False,
 
     "ALGORITHM": "HS256",
@@ -142,7 +155,7 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+#     https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -165,7 +178,7 @@ AUTH_USER_MODEL = 'core.User'
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+#     https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 

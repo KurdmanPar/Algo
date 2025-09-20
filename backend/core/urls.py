@@ -1,7 +1,7 @@
 # backend/core/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserViewSet, signup
+from .views import UserViewSet, signup, LogoutView
 
 # ایجاد یک نمونه از DefaultRouter
 router = DefaultRouter()
@@ -18,4 +18,6 @@ urlpatterns = [
     path('', include(router.urls)),
     # Endpoint مخصوص SignUp
     path('signup/', signup, name='user-signup'),
+    # URL مخصوص Logout - فقط POST
+    path('logout/', LogoutView.as_view(), name='user-logout')
 ]
