@@ -1,23 +1,16 @@
 # backend/core/urls.py
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserViewSet, signup, LogoutView
+from .views import UserViewSet
 
-# ایجاد یک نمونه از DefaultRouter
+# یک روتر برای مدیریت ViewSet ایجاد می‌کنیم
 router = DefaultRouter()
-
-# ثبت ViewSet در روتر
-# آرگومان اول: پیشوند URL (مثلاً 'users' برای /users/)
-# آرگومان دوم: ViewSet مربوطه
-# آرگومان سوم (اختیاری): اسم پیش‌فرض برای URL patternها
+# ViewSet را به روتر ثبت می‌کنیم. DRF به طور خودکار مسیرها را ایجاد می‌کند.
+# مثلاً برای اکشن login، مسیر api/users/login/ ساخته می‌شود.
 router.register(r'users', UserViewSet, basename='user')
 
-# تعریف urlpatterns برای این App
-# include(router.urls) تمام URLهای ایجاد شده توسط روتر را اضافه می‌کند.
+# URLهای اپلیکیشن core
 urlpatterns = [
     path('', include(router.urls)),
-    # Endpoint مخصوص SignUp
-    path('signup/', signup, name='user-signup'),
-    # URL مخصوص Logout - فقط POST
-    path('logout/', LogoutView.as_view(), name='user-logout')
 ]

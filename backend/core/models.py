@@ -1,19 +1,19 @@
 # backend/core/models.py
-from django.contrib.auth.models import AbstractUser
-from django.db import models
 
+from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    """
-    Custom User Model.
-    Extends Django's AbstractUser to allow for future customizations.
-    Add any additional fields here if needed.
-    Examples:
-        phone_number = models.CharField(max_length=15, blank=True)
-        profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    """
-    # Example: Adding a phone number field (optional)
-    # phone_number = models.CharField(max_length=15, blank=True)
+    # در آینده می‌توانید فیلدهای خاصی به اینجا اضافه کنید
+    pass
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    # در آینده فیلدهای بیشتری اینجا اضافه می‌شوند
+    # مثلا: risk_tolerance, initial_capital, preferred_trading_style
+    bio = models.TextField(max_length=500, blank=True)
+    location = models.CharField(max_length=30, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return self.username
+        return f'{self.user.username} Profile'

@@ -1,83 +1,61 @@
 # backend/core/views.py
-######################
-# core/views.py
-from django.shortcuts import render
-from rest_framework import status, generics, permissions # اضافه کردن generics و permissions
+
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken # اضافه کردن RefreshToken
-from .models import User
-from .serializers import UserSerializer, SignUpSerializer, LogoutSerializer # اضافه کردن LogoutSerializer
+from rest_framework.permissions import IsAuthenticated, AllowAny
+# این خط را حذف کنید: from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# ... سایر Viewها ...
-
-######################
-from rest_framework import viewsets, permissions, status # <-- status را اضافه کنید
-from rest_framework.response import Response # <-- Response را اضافه کنید
-from rest_framework.decorators import api_view, permission_classes # <-- اینها را اضافه کنید
-from rest_framework.permissions import AllowAny # <-- AllowAny را اضافه کنید
-from .models import User
-from .serializers.user_serializer import UserSerializer, SignUpSerializer # <-- SignUpSerializer را اضافه کنید
-
+from .models import Profile, User # <-- این خط را اضافه کنید
+from .serializers import UserSerializer, SignUpSerializer, LoginSerializer, ProfileSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing User instances.
-    Permissions are set to IsAuthenticated for now. You can customize this later.
-    """
-    queryset = User.objects.all() # داده‌هایی که این ViewSet با آن کار می‌کند
-    serializer_class = UserSerializer # Serializer مربوطه
-    permission_classes = [permissions.IsAuthenticated] # فقط کاربران وارد شده می‌تونن این APIها رو ببینن
-    # permission_classes = [permissions.AllowAny] # برای تست اولیه می‌تونیم اینو فعال کنیم
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    # نکته: عملیات create (POST /users/) با ModelViewSet انجام میشه،
-    # اما برای کاربران جدید معمولاً Serializer خاصی (مثل SignUpSerializer) نیاز داریم
-    # که رمز عبور رو درست هش کنه. اینجا فقط یک نمایش اولیه هست.
-
-
-
-# core/views.py (ادامه)
-
-class LogoutView(APIView):
-    permission_classes = (permissions.IsAuthenticated,) # فقط کاربران وارد شده می‌توانند logout کنند
-
-    def post(self, request):
-        serializer = LogoutSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                # توکن refresh را از داده‌های درخواست بگیرید
-                refresh_token = serializer.validated_data['refresh']
-                # یک نمونه RefreshToken از رشته توکن ایجاد کنید
-                token = RefreshToken(refresh_token)
-                # توکن را در لیست سیاه قرار دهید
-                token.blacklist()
-                # پاسخ موفقیت‌آمیز
-                return Response({"message": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
-            except Exception as e:
-                # در صورت بروز خطا (مثل توکن نامعتبر یا منقضی شده)
-                return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
+    def get_permissions(self):
+        if self.action in ['signup', 'login']:
+            permission_classes = [AllowAny]
         else:
-            # در صورت نامعتبر بودن داده‌های ورودی (مثلاً فیلد refresh ارسال نشده)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
-
-
-
-
-
-# ------------------ View مخصوص SignUp ------------------
-@api_view(['POST'])
-@permission_classes([AllowAny]) # هر کسی می‌تونه ثبت‌نام کنه
-def signup(request):
-    """
-    API endpoint for user registration (sign up).
-    """
-    serializer = SignUpSerializer(data=request.data)
-    if serializer.is_valid():
+    @action(detail=False, methods=['post'], serializer_class=SignUpSerializer)
+    def signup(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        # می‌تونیم یک پیام موفقیت یا حتی اطلاعات کاربر (بدون پسورد) رو برگردونیم
+        refresh = RefreshToken.for_user(user)
         return Response({
-            "message": "User created successfully",
-            "user": UserSerializer(user).data # برگرداندن اطلاعات کاربر با Serializer اصلی
+            'user': UserSerializer(user).data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], serializer_class=LoginSerializer)
+    def login(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'user': UserSerializer(user).data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    def logout(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
