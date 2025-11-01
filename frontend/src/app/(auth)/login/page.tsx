@@ -1,9 +1,9 @@
-// frontend/src/pages/login.tsx
+// frontend/src/app/(auth)/login/page.tsx
 import Head from 'next/head';
 import Link from 'next/link';
-import LoginForm from '../components/auth/LoginForm';
+import LoginForm from '../../../components/auth/LoginForm';
 
-const LoginPage = () => {
+export default function LoginPage() {
   return (
     <>
       <Head>
@@ -19,10 +19,8 @@ const LoginPage = () => {
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
               یا{' '}
-              <Link href="/register">
-                <a className="font-medium text-primary-600 hover:text-primary-500">
-                  یک حساب کاربری جدید بسازید
-                </a>
+              <Link href="/register" className="font-medium text-primary-600 hover:text-primary-500">
+                یک حساب کاربری جدید بسازید
               </Link>
             </p>
           </div>
@@ -31,6 +29,4 @@ const LoginPage = () => {
       </div>
     </>
   );
-};
-
-export default LoginPage;
+}

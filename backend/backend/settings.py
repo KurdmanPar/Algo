@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # My APP:
     'core',
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     # اپلیکیشن لازم برای مدیریت لیست سیاه توکن‌های Refresh
@@ -114,6 +115,7 @@ SIMPLE_JWT = {
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # <-- این خط را در بالای لیست اضافه کنید
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -198,3 +200,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# CORS SETTINGS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]

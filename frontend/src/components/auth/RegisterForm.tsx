@@ -1,16 +1,17 @@
 // frontend/src/components/auth/RegisterForm.tsx
+'use client'; // این کامپوننت باید سمت کلاینت رندر شود
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation'; // <-- تغییر import
 import { AppDispatch, RootState } from '../../store';
 import { registerUser } from '../../features/auth/authSlice';
 import { RegisterCredentials } from '../../types';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 
-// اسکیمای اعتبارسنجی فرم با Yup
 const registerSchema = yup.object().shape({
   username: yup.string().required('نام کاربری الزامی است').min(3, 'نام کاربری باید حداقل ۳ کاراکتر باشد'),
   email: yup.string().required('ایمیل الزامی است').email('ایمیل معتبر نیست'),
@@ -19,7 +20,7 @@ const registerSchema = yup.object().shape({
 
 const RegisterForm = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const router = useRouter(); // هوک جدید
   const { status, error } = useSelector((state: RootState) => state.auth);
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterCredentials>({
@@ -28,7 +29,6 @@ const RegisterForm = () => {
 
   const onSubmit = (data: RegisterCredentials) => {
     dispatch(registerUser(data)).then((action) => {
-      // اگر ثبت‌نام موفقیت‌آمیز بود، کاربر را به داشبورد هدایت کن
       if (action.meta.requestStatus === 'fulfilled') {
         router.push('/dashboard');
       }
@@ -55,7 +55,6 @@ const RegisterForm = () => {
         error={errors.password?.message}
       />
 
-      {/* نمایش خطای عمومی از بک‌اند */}
       {error && <p className="text-red-600 text-sm text-center">{error}</p>}
 
       <Button type="submit" isLoading={status === 'loading'} className="w-full">

@@ -1,9 +1,9 @@
-// frontend/src/pages/register.tsx
+// frontend/src/app/(auth)/register/page.tsx
 import Head from 'next/head';
 import Link from 'next/link';
-import RegisterForm from '../components/auth/RegisterForm';
+import RegisterForm from '../../../components/auth/RegisterForm';
 
-const RegisterPage = () => {
+export default function RegisterPage() {
   return (
     <>
       <Head>
@@ -19,10 +19,8 @@ const RegisterPage = () => {
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
               یا{' '}
-              <Link href="/login">
-                <a className="font-medium text-primary-600 hover:text-primary-500">
-                  وارد حساب کاربری خود شوید
-                </a>
+              <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500">
+                وارد حساب کاربری خود شوید
               </Link>
             </p>
           </div>
@@ -31,6 +29,4 @@ const RegisterPage = () => {
       </div>
     </>
   );
-};
-
-export default RegisterPage;
+}
