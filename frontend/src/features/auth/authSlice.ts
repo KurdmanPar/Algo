@@ -1,10 +1,7 @@
-// frontend/src/features/auth/authSlice.ts
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { authAPI } from '../../services/api';
 import { AuthState, User, LoginCredentials, RegisterCredentials } from '../../types';
 
-// وضعیت اولیه احراز هویت
 const initialState: AuthState = {
   user: null,
   token: null,
@@ -14,7 +11,6 @@ const initialState: AuthState = {
   error: null,
 };
 
-// تابع асینک برای لاگین
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials: LoginCredentials, { rejectWithValue }) => {
@@ -29,7 +25,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// تابع اسینک برای ثبت‌نام
 export const registerUser = createAsyncThunk(
   'auth/register',
   async (credentials: RegisterCredentials, { rejectWithValue }) => {
@@ -44,7 +39,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// تابع اسینک برای خروج
 export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, { getState }) => {
@@ -58,18 +52,12 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // برای چک کردن توکن در زمان لود اولیه اپلیکیشن
-    setCredentials: (state, action: PayloadAction<{ user: User; access: string; refresh: string }>) => {
-      const { user, access, refresh } = action.payload;
-      state.user = user;
-      state.token = access;
-      state.refreshToken = refresh;
-      state.isAuthenticated = true;
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -113,9 +101,10 @@ const authSlice = createSlice({
         state.refreshToken = null;
         state.isAuthenticated = false;
         state.status = 'idle';
+        state.error = null;
       });
   },
 });
 
-export const { setCredentials } = authSlice.actions;
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;
