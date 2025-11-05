@@ -1,22 +1,16 @@
-'use client';
-
+// frontend/src/app/dashboard/page.tsx
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import AuthGuard from '../../components/AuthGuard';
+import { Layout } from '../../components/Layout';
 
 const DashboardPage = () => {
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const renderUsername = () => {
-    if (!user || typeof user !== 'object') {
-      return 'کاربر';
-    }
-    return typeof user.username === 'string' ? user.username : JSON.stringify(user.username);
-  };
-
   return (
-    <AuthGuard>
+    // <ProtectedRoute>  <-- این کامپوننت را حذف کردیم
+    // </ProtectedRoute>
+    <>
       <Head>
         <title>داشبورد | سیستم معاملاتی الگوریتمی</title>
       </Head>
@@ -27,20 +21,20 @@ const DashboardPage = () => {
             <div className="border-4 border-dashed border-gray-200 dark:border-gray-700 rounded-lg h-96 flex items-center justify-center">
               <div className="text-center">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  خوش آمدید، {renderUsername()}!
+                  خوش آمدید، {user?.username}!
                 </h1>
                 <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
                   این یک منطقه محافظت‌شده است. فقط کاربران لاگین کرده می‌توانند این صفحه را ببینند.
                 </p>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">
-                  ایمیل شما: {user?.email || 'در دسترس نیست'}
+                  ایمیل شما: {user?.email}
                 </p>
               </div>
             </div>
           </div>
         </main>
       </div>
-    </AuthGuard>
+    </>
   );
 };
 

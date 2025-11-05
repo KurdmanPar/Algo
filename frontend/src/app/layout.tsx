@@ -1,7 +1,7 @@
 // frontend/src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import '../../styles/globals.css'; // <-- این خط را اصلاح کنید
+import '../../styles/globals.css'; // مسیر صحیح از src/app به styles
 import { Providers } from '../components/Providers';
 
 const inter = Inter({ subsets: ['latin'] });

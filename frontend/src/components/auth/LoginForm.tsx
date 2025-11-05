@@ -9,8 +9,9 @@ import { useRouter, useSearchParams } from 'next/navigation'; // <-- تغییر 
 import { AppDispatch, RootState } from '../../store';
 import { loginUser } from '../../features/auth/authSlice';
 import { LoginCredentials } from '../../types';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
+
+import Input from '../ui/Input'; // <-- تغییر از default import
+import Button from '../ui/Button'; // <-- تغییر از default import
 
 const loginSchema = yup.object().shape({
   username: yup.string().required('نام کاربری الزامی است'),

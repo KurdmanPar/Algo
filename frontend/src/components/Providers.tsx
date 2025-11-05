@@ -2,10 +2,14 @@
 'use client'; // این کامپوننت باید سمت کلاینت رندر شود
 
 import { Provider } from 'react-redux';
-import { store } from '../store';
+import { store } from '../store'; // مسیر صحیح از components به store
 import { ThemeProvider } from 'next-themes';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+interface ProvidersProps {
+  children: React.ReactNode;
+}
+
+export function Providers({ children }: ProvidersProps) {
   return (
     <Provider store={store}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
